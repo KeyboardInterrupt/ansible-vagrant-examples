@@ -1,0 +1,19 @@
+---
+- name: Install Apache2 packages on Redhat based Systems
+  yum:
+    name: httpd
+    state: installed
+  when: ansible_os_family == "RedHat"
+  notify: restart httpd
+
+- name: Install Apache2 packages on Debian based Systems
+  apt:
+    name: apache2
+    state: installed
+  when: ansible_os_family == "Debian"
+  notify: restart apache2
+
+- name: Deploy the Hello World site
+  template:
+    src: hello.html.j2
+    dest: /var/www/html/hello.html

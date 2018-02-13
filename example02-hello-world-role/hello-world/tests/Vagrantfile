@@ -1,0 +1,21 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  boxes = [
+    { :name => "ubuntu-hello-world-box", :box => "kbi/ubuntu16.04" },
+    { :name => "debian-hello-world-box", :box => "kbi/debian9" },
+    { :name => "centos-hello-world-box", :box => "kbi/centos7" }
+  ]
+  boxes.each do |opts|
+    config.vm.define opts[:name] do |config|
+      config.vm.box = opts[:box]
+      if opts[:name] == boxes.last[:name]
+        config.vm.provision "ansible" do |ansible|
+          ansible.playbook = "test.yml"
+          ansible.limit = "all"
+        end
+      end
+    end
+  end
+end

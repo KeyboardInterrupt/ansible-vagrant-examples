@@ -1,0 +1,22 @@
+---
+- hosts: all
+  become: yes
+  roles:
+    - ../../.
+  tasks:
+    - name: Flush the Handlers
+      meta: flush_handlers
+
+    - name: HTTP Check if hello.html exists
+      uri:
+        url: http://127.0.0.1:80/hello.html
+      register: http_response
+
+    - name: Debug output
+      debug:
+        msg: "{{ http_response }}"
+
+    - name: Check the Statuscode of the http_response is 200
+      fail:
+        msg: Something went wrong :/
+      when: http_response.status != 200
